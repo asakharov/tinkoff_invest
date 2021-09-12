@@ -1,4 +1,4 @@
-from config import SANDBOX_SERVER, PRODUCTION_SERVER, WEB_SOCKETS_SERVER
+from tinkoff_invest.config import SANDBOX_SERVER, PRODUCTION_SERVER, WEB_SOCKETS_SERVER
 from tinkoff_invest.base_session import Session
 from tinkoff_invest.models.types import Currency
 

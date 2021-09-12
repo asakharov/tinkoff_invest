@@ -8,7 +8,7 @@ import random
 from typing import List, Optional, Dict, Union
 from queue import Queue
 
-from config import EVENTS_PROCESSING_WORKERS_COUNT
+from tinkoff_invest.config import EVENTS_PROCESSING_WORKERS_COUNT
 from tinkoff_invest.base_strategy import BaseStrategy
 from tinkoff_invest.models.candle import Candle
 from tinkoff_invest.models.instrument_status import InstrumentStatus
