@@ -1,0 +1,6 @@
+prettytable~=2.1.0
+iso8601~=0.1.12
+requests~=2.24.0
+ujson~=4.0.1
+urllib3~=1.25.11
+websocket-client~=1.1.0
