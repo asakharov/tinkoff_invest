@@ -24,7 +24,7 @@ _RETRY_TIMEOUT_SEC = 3
 
 
 class OrderNotification:
-    def on_order_completed(self, order: Order) -> None:
+    def on_order_completed(self, order: Order, operation: Operation) -> None:
         pass
 
     def on_order_partially_executed(self, order: Order) -> None:
@@ -136,8 +136,15 @@ class Session(SubscriptionManager):
                 found = True
                 break
             if not found:
-                callback_object.on_order_completed(order)
-                break
+                today = datetime.datetime.utcnow()
+                day_start = datetime.datetime(year=today.year, month=today.month, day=today.day, hour=0, second=0)
+                day_end = day_start + datetime.timedelta(days=1)
+                operations = self.get_operations(day_start, day_end, order.figi)
+                for o in operations:
+                    if o.id == order.id:
+                        callback_object.on_order_completed(order, o)
+                        return
+                time.sleep(1)
 
     def cancel_order(self, order_id: str) -> None:
         self._post('orders/cancel?orderId={}'.format(order_id), {})
