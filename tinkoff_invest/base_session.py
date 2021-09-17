@@ -86,13 +86,13 @@ class Session(SubscriptionManager):
         return [Candle(iterator) for iterator in candles]
 
     def get_orderbook(self, figi: str, depth: int) -> OrderBook:
-        assert(1 <= depth <= 20), "Depth should be in range [1..20]"
+        assert (1 <= depth <= 20), "Depth should be in range [1..20]"
         response = self._get('market/orderbook?figi={}&depth={}'.format(figi, depth))
         return OrderBook(response["payload"])
 
     def get_instrument_by_ticker(self, ticker: str) -> Instrument:
         instrument = self._get('market/search/by-ticker?ticker={}'.format(ticker))
-        assert(instrument["payload"]["total"] == 1),\
+        assert (instrument["payload"]["total"] == 1), \
             "An unexpected number {} (1 expected) of stocks for ticker '{}'.".format(
                 instrument["payload"]["total"], ticker)
         return Instrument(instrument["payload"]["instruments"][0])
@@ -139,7 +139,8 @@ class Session(SubscriptionManager):
                 today = datetime.datetime.utcnow()
                 day_start = datetime.datetime(year=today.year, month=today.month, day=today.day, hour=0, second=0)
                 day_end = day_start + datetime.timedelta(days=1)
-                operations = self.get_operations(day_start, day_end, order.figi)
+                operations = self.get_operations(day_start,
+                                                 day_end)  # TODO: add order.figi parameter onse it will appear API
                 for o in operations:
                     if o.id == order.id:
                         callback_object.on_order_completed(order, o)
@@ -157,7 +158,7 @@ class Session(SubscriptionManager):
 
     def _get(self, query: str) -> dict:
         logging.debug("Making request GET '%s%s'", self._server, query)
-        account = "" if not self._account_id else "&brokerAccountId={}".format(self._account_id) if "?" in query\
+        account = "" if not self._account_id else "&brokerAccountId={}".format(self._account_id) if "?" in query \
             else "?brokerAccountId={}".format(self._account_id)
         response = None
         for i in range(1, _HTTP_RETRIES_COUNT):
