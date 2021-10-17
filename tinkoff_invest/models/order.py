@@ -56,8 +56,8 @@ class Order:
         return MoneyAmount(self._data["commission"])
 
     def __str__(self) -> str:
-        table = PrettyTable(field_names=['Operation', 'Status', 'Requested Lots', 'Executed Lots',
+        table = PrettyTable(field_names=['Operation', 'Figi', 'Status', 'Requested Lots', 'Executed Lots',
                                          'Commission', 'Reason'])
-        table.add_row([self.operation.name, self.status.name, self.requested_lots, self.executed_lots,
+        table.add_row([self.operation.name, self.figi, self.status.name, self.requested_lots, self.executed_lots,
                        "{} {}".format(self.commission.value, self.commission.currency.name), self.reject_reason])
         return str(table)
