@@ -16,7 +16,7 @@ from tinkoff_invest.models.operation import Operation
 from tinkoff_invest.models.order import Order
 from tinkoff_invest.models.order_book import OrderBook
 from tinkoff_invest.models.portfolio import Portfolio, CurrencyPortfolio, PositionPortfolio
-from tinkoff_invest.models.types import SubscriptionInterval, OperationType
+from tinkoff_invest.models.types import SubscriptionInterval, OperationType, OperationStatus
 from tinkoff_invest.subscriptions import SubscriptionManager
 
 _HTTP_RETRIES_COUNT = 10
@@ -140,9 +140,11 @@ class Session(SubscriptionManager):
                 day_start = datetime.datetime(year=today.year, month=today.month, day=today.day, hour=0, second=0)
                 day_end = day_start + datetime.timedelta(days=1)
                 operations = self.get_operations(day_start,
-                                                 day_end)  # TODO: add order.figi parameter onse it will appear API
+                                                 day_end)  # TODO: add order.figi parameter once it will appear API
                 for o in operations:
                     if o.id == order.id:
+                        if o.status == OperationStatus.DONE and (not o.price or not o.quantity):
+                            break  # TODO:remove after https://github.com/TinkoffCreditSystems/invest-openapi/issues/588
                         callback_object.on_order_completed(order, o)
                         return
                 time.sleep(1)
