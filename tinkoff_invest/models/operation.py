@@ -53,6 +53,7 @@ class Operation:
     def date(self) -> datetime.date:
         return iso8601.parse_date(self._data["date"])
 
+    @property
     def is_margin(self) -> Optional[bool]:
         return bool(self._data["isMarginCall"]) if "isMarginCall" in self._data else None
 

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tinkoff_invest',
-    version='1.0.4',
+    version='1.0.5',
     packages=['tinkoff_invest', 'tinkoff_invest.models'],
     url='https://github.com/asakharov/tinkoff_invest',
     python_requires='>=3.8.0',

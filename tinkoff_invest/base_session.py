@@ -134,6 +134,7 @@ class Session(SubscriptionManager):
 
                 time.sleep(1)
                 found = True
+                order = o
                 break
             if not found:
                 today = datetime.datetime.utcnow()
@@ -141,11 +142,11 @@ class Session(SubscriptionManager):
                 day_end = day_start + datetime.timedelta(days=1)
                 operations = self.get_operations(day_start,
                                                  day_end)  # TODO: add order.figi parameter once it will appear API
-                for o in operations:
-                    if o.id == order.id:
-                        if o.status == OperationStatus.DONE and (not o.price or not o.quantity):
+                for op in operations:
+                    if op.id == order.id:
+                        if op.status == OperationStatus.DONE and (not op.price or not op.quantity or not op.commission):
                             break  # TODO:remove after https://github.com/TinkoffCreditSystems/invest-openapi/issues/588
-                        callback_object.on_order_completed(order, o)
+                        callback_object.on_order_completed(order, op)
                         return
                 time.sleep(1)
 
@@ -163,14 +164,14 @@ class Session(SubscriptionManager):
         account = "" if not self._account_id else "&brokerAccountId={}".format(self._account_id) if "?" in query \
             else "?brokerAccountId={}".format(self._account_id)
         response = None
-        for i in range(1, _HTTP_RETRIES_COUNT):
+        for i in range(_HTTP_RETRIES_COUNT):
             try:
                 response = requests.get(self._server + query.replace(':', '%3A').replace('+', '%2B') + account,
                                         headers=self._auth_headers)
                 if response.status_code != requests.codes.ok:
                     if response.status_code == requests.codes.too_many_requests:
                         time.sleep(_RETRY_TIMEOUT_SEC)
-                        return self._get(query)
+                        continue
 
                     message = response.text
                     if response.status_code not in [requests.codes.service_unavailable, requests.codes.not_found]:

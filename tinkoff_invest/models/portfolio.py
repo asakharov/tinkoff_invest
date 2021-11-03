@@ -70,7 +70,7 @@ class PositionPortfolio:
         return MoneyAmount(self._data["expectedYield"] if "expectedYield" in self._data else None)
 
     @property
-    def average_prise(self) -> MoneyAmount:
+    def average_price(self) -> MoneyAmount:
         return MoneyAmount(self._data["averagePositionPrice"] if "averagePositionPrice" in self._data else None)
 
     @property
@@ -80,7 +80,7 @@ class PositionPortfolio:
 
     def __str__(self) -> str:
         table = PrettyTable(field_names=['Ticker', 'Name', 'Type', 'Balance', 'Lots', 'Avg price'])
-        table.add_row([self.ticker, self.name, self.type.value, int(self.balance), self.lots, self.average_prise])
+        table.add_row([self.ticker, self.name, self.type.value, int(self.balance), self.lots, self.average_price])
         return str(table)
 
 
@@ -125,6 +125,6 @@ class Portfolio:
         for item in self.positions:
             if item.type == InstrumentType.CURRENCY:
                 continue
-            table_pos.add_row([item.ticker, item.name, item.type.value, item.balance, item.lots, item.average_prise])
+            table_pos.add_row([item.ticker, item.name, item.type.value, item.balance, item.lots, item.average_price])
         result += str(table_pos)
         return result

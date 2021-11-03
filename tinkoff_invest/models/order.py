@@ -16,7 +16,7 @@ class Order:
 
     @property
     def figi(self) -> str:
-        return self._data['figi']
+        return self._data.get('figi', '') # It's absent after creating an order for some reason
 
     @property
     def type(self) -> OrderType:
